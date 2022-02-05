@@ -9,6 +9,7 @@ import net.kikkirej.alexandria.initiator.github.github.GitCloneService
 import net.kikkirej.alexandria.initiator.github.github.GitHubFacade
 import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHRepository
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -26,6 +27,8 @@ class GitHubInitiatorLogic(
     @Autowired val camundaLayer: CamundaLayer,
     @Autowired val gitCloneService: GitCloneService,
 ) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(initialDelay = 100, fixedRate = 24*60*60*1000)
     fun run() {
@@ -55,9 +58,11 @@ class GitHubInitiatorLogic(
         sourceConfig: GitHubSourceConfig
     ) {
         for(repository in analyzingObjects.keys){
+            log.info("Starting analysis for Repository $repository")
             val dbProject = getDBProject(repository, source)
             val branches = analyzingObjects[repository]
             for(branch in branches!!){
+                log.info("Starting analysis for Branch $branch")
                 val version = getDBVersion(branch, dbProject, repository.defaultBranch == branch.name)
                 val analysis = Analysis(version = version)
                 analysisRepository.save(analysis)
@@ -152,24 +157,31 @@ private fun Version.setMetadata(key: String, value: Any?) {
             return
         }
     }
-    val versionMetadata: VersionMetadata
-    if(value == null){
-        versionMetadata =
-            VersionMetadata(key = key, value = "", type = "", version = this)
+    val versionMetadata: VersionMetadata = if(value == null){
+        VersionMetadata(key = key, value = "", type = "", version = this)
     }else{
-        versionMetadata = VersionMetadata(key = key, value = value.toString(), type = value::class.java.typeName, version = this)
+        VersionMetadata(key = key, value = value.toString(), type = value::class.java.typeName, version = this)
     }
     metadata.add(versionMetadata)
 }
 
-private fun Project.setMetadata(key: String, value: Any) {
+private fun Project.setMetadata(key: String, value: Any?) {
     for(obj in metadata){
         if(obj.key==key){
+            if(value==null){
+                obj.value=""
+                obj.type=""
+                return
+            }
             obj.value = value.toString()
             obj.type = value::class.java.typeName
             return
         }
     }
-    val projectMetadata = ProjectMetadata(key = key, value = value.toString(), type = value::class.java.typeName, project = this)
+    val projectMetadata: ProjectMetadata = if(value == null){
+        ProjectMetadata(key = key, value = "", type = "", project = this)
+    }else{
+        ProjectMetadata(key = key, value = value.toString(), type = value::class.java.typeName, project = this)
+    }
     metadata.add(projectMetadata)
 }
