@@ -14,6 +14,10 @@ class GitHubSourceConfig(
     var id: Long,
     var name: String,
     var organization: String?,
+    var accessUsername: String,
     var accessToken: String,
-    var namePattern: String?,
-)
+    var repositoryNamePattern: String?,
+    val branchNamePattern: String?,
+) {
+
+}
