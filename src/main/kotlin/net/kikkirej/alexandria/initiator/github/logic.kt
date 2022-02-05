@@ -139,15 +139,26 @@ class GitHubInitiatorLogic(
     }
 }
 
-private fun Version.setMetadata(key: String, value: Any) {
+private fun Version.setMetadata(key: String, value: Any?) {
     for(obj in metadata){
         if(obj.key==key){
+            if(value==null){
+                obj.value=""
+                obj.type=""
+                return
+            }
             obj.value = value.toString()
             obj.type = value::class.java.typeName
             return
         }
     }
-    val versionMetadata = VersionMetadata(key = key, value = value.toString(), type = value::class.java.typeName, version = this)
+    val versionMetadata: VersionMetadata
+    if(value == null){
+        versionMetadata =
+            VersionMetadata(key = key, value = "", type = "", version = this)
+    }else{
+        versionMetadata = VersionMetadata(key = key, value = value.toString(), type = value::class.java.typeName, version = this)
+    }
     metadata.add(versionMetadata)
 }
 
