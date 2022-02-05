@@ -74,7 +74,7 @@ class GitHubInitiatorLogic(
     }
 
     private fun getFilePath(analysis: Analysis): String {
-        val upperFolder = File(generalProperties.sharedfolder);
+        val upperFolder = File(generalProperties.sharedfolder)
         val analysisFolder = File(upperFolder.absolutePath + File.separator + analysis.id)
         return analysisFolder.absolutePath
     }
@@ -90,6 +90,7 @@ class GitHubInitiatorLogic(
         }
         version.setMetadata("protected", branch.isProtected)
         version.setMetadata("shA1", branch.shA1)
+        versionRepository.save(version)
         return version
     }
 
