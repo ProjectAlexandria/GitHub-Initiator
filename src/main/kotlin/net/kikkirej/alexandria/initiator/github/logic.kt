@@ -11,8 +11,10 @@ import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
 import java.io.File
 
+@Component
 class GitHubInitiatorLogic(
     @Autowired val gitHubFacade: GitHubFacade,
     @Autowired val gitHubInitConfig: GitHubInitConfig,
