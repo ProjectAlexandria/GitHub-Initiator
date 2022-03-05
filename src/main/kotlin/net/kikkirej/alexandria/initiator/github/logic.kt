@@ -5,8 +5,8 @@ import net.kikkirej.alexandria.initiator.github.config.GeneralProperties
 import net.kikkirej.alexandria.initiator.github.config.GitHubInitConfig
 import net.kikkirej.alexandria.initiator.github.config.GitHubSourceConfig
 import net.kikkirej.alexandria.initiator.github.db.*
-import net.kikkirej.alexandria.initiator.github.github.GitCloneService
-import net.kikkirej.alexandria.initiator.github.github.GitHubFacade
+import net.kikkirej.alexandria.initiator.github.remote.GitCloneService
+import net.kikkirej.alexandria.initiator.github.remote.GitHubFacade
 import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHRepository
 import org.slf4j.LoggerFactory

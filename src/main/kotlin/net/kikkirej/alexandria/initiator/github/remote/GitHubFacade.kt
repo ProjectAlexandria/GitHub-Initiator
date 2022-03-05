@@ -1,4 +1,4 @@
-package net.kikkirej.alexandria.initiator.github.github
+package net.kikkirej.alexandria.initiator.github.remote
 
 import net.kikkirej.alexandria.initiator.github.config.GitHubSourceConfig
 import org.kohsuke.github.*
