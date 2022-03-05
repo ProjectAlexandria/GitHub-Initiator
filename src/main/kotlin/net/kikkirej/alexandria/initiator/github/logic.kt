@@ -50,8 +50,9 @@ class GitHubInitiatorLogic(
             return sourceOptional.get()
         }
         val source = Source(id = sourceConfig.id, name = sourceConfig.name,)
-        sourceRepository.save(source)
-        return source
+        val returnValue = sourceRepository.save(source)
+        log.info("Source: $source")
+        return returnValue
     }
 
     private fun handleAnalysisOf(
