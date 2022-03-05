@@ -68,7 +68,7 @@ class GitHubInitiatorLogic(
                 log.info("Starting analysis for Branch $branch")
                 val version = getDBVersion(branch, dbProject, repository.defaultBranch == branch.name)
                 val analysis = Analysis(version = version)
-                analysisRepository.save(analysis)
+                analysisRepository.saveAndFlush(analysis)
                 val filePath = getFilePath(analysis)
                 gitCloneService.clone(filePath, repository.httpTransportUrl, version.name, sourceConfig)
                 camundaLayer.startProcess(project = dbProject, version= version, analysis= analysis, filePath)
