@@ -11,7 +11,7 @@ class Source(@Id var id: Long,
 
 @Entity(name = "project")
 class Project(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) var id: Long = 0,
-              @ManyToOne(cascade = [CascadeType.PERSIST]) var source: Source,
+              @ManyToOne var source: Source,
               var url:String?,
               @Column(name = "external_identifier") var externalIdentifier: String,
               @OneToMany(cascade = [CascadeType.ALL], mappedBy = "project") var metadata: MutableSet<ProjectMetadata> = mutableSetOf()
@@ -29,7 +29,7 @@ class ProjectMetadata(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) va
 class Version(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) var id: Long = 0,
               var default_version: Boolean = true, //in case of Filesystem there is only one "default"-version
               var name:String,
-              @ManyToOne(cascade = [CascadeType.PERSIST]) var project: Project,
+              @ManyToOne var project: Project,
               @ManyToOne var latest_analysis: Analysis? = null,
               @OneToMany(cascade = [CascadeType.ALL], mappedBy = "version") var metadata: MutableSet<VersionMetadata> = mutableSetOf()
 )

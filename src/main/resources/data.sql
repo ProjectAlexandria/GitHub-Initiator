@@ -24,10 +24,20 @@ DROP VIEW IF EXISTS view_project_analyzers_stats;
 
 CREATE VIEW view_project_analyzers_stats AS
 SELECT
-    unnest(ARRAY ['all', 'maven', 'node', 'dockerfile']) AS "Projects",
+    unnest(ARRAY ['all', 'maven', 'node', 'dockerfile']) AS Projects,
     unnest(ARRAY [
         ( SELECT count(v.*) AS count FROM view_project_analyzers v),
         ( SELECT count(v.*) AS count FROM view_project_analyzers v WHERE v.maven = true),
         ( SELECT count(v.*) AS count FROM view_project_analyzers v WHERE v.node = true),
         ( SELECT count(v.*) AS count FROM view_project_analyzers v WHERE v.dockerfile = true)
-        ]) as count;
+        ]) as value,
+    unnest(ARRAY [
+        ( SELECT 1.0*count(v.*)/( SELECT count(v.*) AS count FROM view_project_analyzers v) AS count FROM view_project_analyzers v),
+        ( SELECT 1.0*count(v.*)/( SELECT count(v.*) AS count FROM view_project_analyzers v) AS count FROM view_project_analyzers v WHERE v.maven = true),
+        ( SELECT 1.0*count(v.*)/( SELECT count(v.*) AS count FROM view_project_analyzers v) AS count FROM view_project_analyzers v WHERE v.node = true),
+        ( SELECT 1.0*count(v.*)/( SELECT count(v.*) AS count FROM view_project_analyzers v) AS count FROM view_project_analyzers v WHERE v.dockerfile = true)
+        ]) as percent
+;
+
+SELECT DISTINCT mmd.id as id, md.artifact_id, md.group_id, mmd.scope, mmd.version FROM maven_module_dependency mmd
+                                                                                           left join maven_dependency md on md.id = mmd.dependency_id
