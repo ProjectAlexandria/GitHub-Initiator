@@ -67,8 +67,9 @@ class GitHubInitiatorLogic(
             for(branch in branches!!){
                 log.info("Starting analysis for Branch $branch")
                 val version = getDBVersion(branch, dbProject, repository.defaultBranch == branch.name)
-                val analysis = Analysis(version = version)
-                analysisRepository.saveAndFlush(analysis)
+                var analysis = Analysis(version = version)
+                analysis = analysisRepository.saveAndFlush(analysis)
+                log.info("Analysis-ID: ${analysis.id}")
                 val filePath = getFilePath(analysis)
                 gitCloneService.clone(filePath, repository.httpTransportUrl, version.name, sourceConfig)
                 camundaLayer.startProcess(project = dbProject, version= version, analysis= analysis, filePath)
@@ -93,8 +94,7 @@ class GitHubInitiatorLogic(
         }
         version.setMetadata("protected", branch.isProtected)
         version.setMetadata("shA1", branch.shA1)
-        versionRepository.save(version)
-        return version
+        return versionRepository.save(version)
     }
 
     private fun getDBProject(repository: GHRepository, source: Source): Project {
@@ -143,8 +143,7 @@ class GitHubInitiatorLogic(
         project.setMetadata("open_issue_count", repository.openIssueCount)
         project.setMetadata("pushed_at", repository.pushedAt)
         project.setMetadata("watchers_count", repository.watchersCount)
-        projectRepository.save(project)
-        return project
+        return projectRepository.save(project)
     }
 }
 

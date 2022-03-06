@@ -7,7 +7,11 @@ import javax.persistence.*
 @Entity(name = "source")
 class Source(@Id var id: Long,
              var name: String,
-             var type: String = "GitHub")
+             var type: String = "GitHub"){
+    override fun toString(): String {
+        return "Source(id=$id, name='$name', type='$type')"
+    }
+}
 
 @Entity(name = "project")
 class Project(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) var id: Long = 0,
@@ -27,7 +31,7 @@ class ProjectMetadata(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) va
 
 @Entity(name = "version")
 class Version(@Id @GeneratedValue(strategy = GenerationType.SEQUENCE) var id: Long = 0,
-              var default_version: Boolean = true, //in case of Filesystem there is only one "default"-version
+              var default_version: Boolean = false, //in case of Filesystem there is only one "default"-version
               var name:String,
               @ManyToOne var project: Project,
               @ManyToOne var latest_analysis: Analysis? = null,
